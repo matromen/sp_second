@@ -20,6 +20,7 @@ public class SpBoardParam extends Param{
 		super(1, 10, "999", "");
 	}
 	
+	// controller에서 결과 페이지 redirect시 파라미터로 사용 됨.
 	public String getParamUrl() {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromPath("");
 		
