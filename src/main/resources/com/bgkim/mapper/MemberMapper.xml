@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.bgkim.mapper.MemberMapper">
+	
+	<resultMap id="memberMap" type="com.bgkim.domain.security.MemberVO">
+		<id property="userid" column="userid" />
+		<result property="userid" column="userid"/>
+		<result property="userpw" column="userpw" />
+		<result property="username" column="username" />
+		<result property="regdate" column="regdate"/>
+		<result property="updatedate" column="updatedate" />
+		<result property="enabled" column="enabled"/>
+		<collection property="authList" resultMap="authMap" />				
+	</resultMap>
+	
+	<resultMap id="authMap" type="com.bgkim.domain.security.MemberAuthVO">
+		<result property="userid" column="userid" />
+		<result property="auth" column="auth" />
+	</resultMap>
+
+	<select id="memberSelect" resultMap="memberMap">
+		select a.userid, a.userpw, a.username, a.regdate, a.updatedate, a.enabled, b.auth
+		from sp_member a left join sp_member_auth b on a.userid = b.userid
+		where a.userid = #{userid}
+	</select>
+	
+	<select id="useridSelect" resultType="String">
+		select userid from sp_member where username like '%'||#{username}||'%'
+	</select>
+</mapper>

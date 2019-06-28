@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bgkim.mapper.SpBoardAttachMapper">
+	<insert id="attachInsert">
+		insert into sp_board_attach (uuid, seq, uploadpath, filename, filetype) values
+		(#{uuid}, #{seq}, #{uploadPath}, #{fileName}, #{fileType})
+	</insert>
+	
+	<select id="attachViewListSelect" resultType="com.bgkim.domain.board.SpBoardAttachVO">
+		select uuid, seq, filename, uploadpath, filetype from sp_board_attach where seq=#{seq}
+	</select>
+	
+	<delete id="seqAllAttachDelete">
+		delete from sp_board_attach where seq=#{seq}
+	</delete>
+</mapper>
+

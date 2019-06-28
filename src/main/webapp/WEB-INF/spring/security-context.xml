@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+		
+	<bean id="customAccessDenied" class="com.bgkim.security.CustomAccessDeniedHandler"></bean>
+	<bean id="customLoginSuccess" class="com.bgkim.security.CustomLoginSuccessHandler"></bean>
+	<bean id="customUserDetailService" class="com.bgkim.security.CustomUserDetailService"></bean>
+	<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
+
+	<security:http auto-config="true" use-expressions="true">
+		<!-- get / login page call -->
+		<security:form-login login-page="/security/login" authentication-success-handler-ref="customLoginSuccess" />
+		
+		<!-- post / logout call -->
+		<security:logout logout-url="/logout" invalidate-session="true" delete-cookies="JSESSIONID, spcookie"/> 
+		<!-- logout-success-url="/sample/all -->
+		
+		<!-- remember -->
+		<security:remember-me data-source-ref="dataSource" remember-me-cookie="spcookie" remember-me-parameter="sp-param" token-validity-seconds="604800" />
+		
+		<!-- denied handler Forbidden 403 -->
+		<security:access-denied-handler ref="customAccessDenied"/>
+	</security:http>
+	
+	
+	<!-- post / login -->
+	<security:authentication-manager>
+		<security:authentication-provider user-service-ref="customUserDetailService">
+			<security:password-encoder ref="bcryptPasswordEncoder"/>
+		</security:authentication-provider>
+	</security:authentication-manager>
+</beans>
+ 

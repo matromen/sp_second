@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.bgkim.mapper.SpBoardMapper">
+
+	<sql id="spBoardCondition">
+		<trim prefix="(" suffix=") AND" prefixOverrides="OR">
+			<foreach item="stype" collection="searchTypeArr">
+				<trim prefix="OR">
+					<choose>
+						<when test="stype=='000'.toString()">
+							title like '%'||#{searchValue}||'%'
+						</when>
+						<when test="stype=='111'.toString()">
+							content like '%'||#{searchValue}||'%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+		
+		<if test="transSearchValue0!=null">
+			<if test="@com.bgkim.utils.MybatisUtil@isNotEmpty(transSearchValue0)">
+				<trim prefix="(" suffix=") AND">
+					register in 
+					<foreach item="ids" collection="transSearchValue0" open="(" separator="," close=")">
+						#{ids}
+					</foreach>
+				</trim>
+			</if>
+		</if>
+	</sql>
+
+
+	<select id="totalSelect" resultType="int">
+		select count(seq) from sp_board
+		where 
+		<include refid="spBoardCondition"></include>
+		seq &gt; 0
+	</select>
+	
+	<select id="listSelect" resultType="com.bgkim.domain.board.SpBoardVO">
+		select seq, register, title, content, rdate, udate, username
+		from
+		(
+		
+			<!-- select /*INDEX_DESC(sp_board pk_sp_board)*/ -->
+			select rownum rn,
+			a.seq, a.register, a.title, a.content, a.rdate, a.udate, b.username
+			from sp_board a left join sp_member b
+			on a.register = b.userid
+			where
+			<include refid="spBoardCondition"></include>
+			rownum &lt;= #{pageNum}*#{pageAmount}
+			
+			order by seq desc
+		) 
+		where rn &gt; (#{pageNum}-1)*#{pageAmount}
+	</select>
+	
+	<insert id="writeInsert">
+		<selectKey keyProperty="seq" order="BEFORE" resultType="long">
+			select seq_sp_board.nextval from dual
+		</selectKey>
+		
+		insert into sp_board (seq, register, title, content, rdate, udate)
+		values (#{seq}, #{register}, #{title}, #{content}, sysdate, sysdate)
+	</insert>
+	
+	<select id="detailSelect" resultType="com.bgkim.domain.board.SpBoardVO">
+		select seq, register, title, content, rdate, udate,
+		(select username from sp_member where userid=a.register) userName
+		from sp_board a
+		where seq = #{seq}
+	</select>
+	
+	<update id="updateUpdate">
+		update sp_board set register=#{register}, title=#{title}, content=#{content}, udate=sysdate
+		where seq = #{seq}
+	</update>
+	
+	<select id="registerSelect" resultType="String">
+		select register from sp_board where seq=#{seq}
+	</select>
+	
+	<delete id="deleteDelete">
+		delete from sp_board where seq = #{seq}
+	</delete>
+</mapper>    
