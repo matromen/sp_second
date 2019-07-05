@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bgkim.mapper.SpBoardReplyMapper">
+	<select id="replyTotalSelect" resultType="int">
+		select count(*) from sp_board_reply where seq = #{seq}
+	</select>
+	
+	<select id="replyListSelect" resultType="com.bgkim.domain.board.SpBoardReplyVO">
+		select rseq, seq, content, register, regdate, updatedate, username
+		from
+		(
+		<!-- 	select /*+INDEX(sp_board_reply idx_sp_board_reply)*/ -->
+			select 
+			rownum rn, a.rseq, a.seq, a.content, a.register, a.regdate, a.updatedate, b.username  
+			from sp_board_reply a left join sp_member b
+			on a.register = b.userid 
+			where seq = #{seq}
+			and rownum &lt;= #{rParam.pageNum}*#{rParam.pageAmount}
+		)
+		where rn &gt; (#{rParam.pageNum}-1)*#{rParam.pageAmount}
+	</select>
+	
+	<insert id="writeInsert">
+		<selectKey keyProperty="rseq" order="BEFORE" resultType="long">
+			select seq_sp_board_reply.nextval from dual
+		</selectKey>
+			
+		insert into sp_board_reply (rseq, seq, content, register, regdate, updatedate)
+		values (#{rseq}, #{seq}, #{content}, #{register}, sysdate, sysdate)
+	</insert>
+	
+	<select id="replyDetailSelect" resultType="com.bgkim.domain.board.SpBoardReplyVO">
+		select rseq, seq, content, register, regdate, updatedate, 
+		(select username from sp_member where userid=register) username
+		from sp_board_reply
+		where rseq = #{rseq}
+	</select>
+	
+	<update id="modReplyUpdate">
+		update sp_board_reply set content=#{content}, register=#{register}, updatedate=sysdate  where rseq=#{rseq} and seq=#{seq}
+	</update>
+	
+	<delete id="remReplyDelete">
+		delete from sp_board_reply where rseq=#{rseq} and seq=#{seq}
+	</delete>
+	
+	<select id="registerSelect" resultType="String">
+		select register from sp_board_reply where rseq = #{rseq}
+	</select>
+	
+	<delete id="remReplyAllDelete">
+		delete from sp_board_reply where seq=#{seq}
+	</delete>
+</mapper>

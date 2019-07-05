@@ -8,6 +8,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -139,7 +141,7 @@ public class SpBoardFileController {
 		return result;
 	}
 	
-	// 파일 삭제
+	// 단일 선택 파일 삭제
 	@PostMapping(value="/deleteFile", produces= {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> deleteFile(String fileName, String type){
 		File file;
@@ -161,7 +163,7 @@ public class SpBoardFileController {
 		return new ResponseEntity<>("Delete SUCCESS", HttpStatus.OK);
 	}
 	
-	// 보기 및 수정 페이지 에서 파일 리스트 표현
+	// 보기 및 수정 페이지, 삭제 등 에서 파일 리스트 정보
 	@GetMapping(value="/viewAttachList", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
 	public ResponseEntity<List<SpBoardAttachVO>> viewAttachList(long seq){
 		return new ResponseEntity<>(service.getAttachViewList(seq), HttpStatus.OK);

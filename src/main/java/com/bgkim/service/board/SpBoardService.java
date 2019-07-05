@@ -7,13 +7,14 @@ import com.bgkim.domain.board.SpBoardParam;
 import com.bgkim.domain.board.SpBoardVO;
 
 public interface SpBoardService {
+
 	public int getCount(SpBoardParam pbean);
 	
 	public List<SpBoardVO> getList(SpBoardParam pbean);
 	
 	public int writePro(SpBoardVO vo);
 	
-	public SpBoardVO getDetail(long seq);
+	public SpBoardVO getDetail(long seq, char flag);
 	
 	public int updatePro(SpBoardVO vo);
 	
@@ -21,4 +22,5 @@ public interface SpBoardService {
 	
 	public List<SpBoardAttachVO> getAttachViewList(long seq);
 
+	public void deleteFiles(List<SpBoardAttachVO> seq);
 }

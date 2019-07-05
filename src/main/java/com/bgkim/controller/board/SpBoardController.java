@@ -53,9 +53,11 @@ public class SpBoardController {
 	
 	@PostMapping("/writePro")
 	public String writePro(@ModelAttribute("pbean") SpBoardParam pbean, SpBoardVO vo, Authentication authentication, RedirectAttributes rttr) {
-		CustomUser user = (CustomUser)authentication.getPrincipal();
-		vo.setRegister(user.getUsername());
-
+//		CustomUser user = (CustomUser)authentication.getPrincipal();
+//		vo.setRegister(user.getUsername());
+		
+		vo.setRegister(authentication.getName());
+				
 		int rg = service.writePro(vo);
 
 		rttr.addFlashAttribute("result", rg > 0);
@@ -65,23 +67,26 @@ public class SpBoardController {
 	
 	@GetMapping("/detailForm")
 	public void detailForm(@ModelAttribute("pbean") SpBoardParam pbean, long seq, Model model) {
-		model.addAttribute("vo", service.getDetail(seq));
+		model.addAttribute("vo", service.getDetail(seq, 'd'));
 	}
 	
 	@GetMapping("/updateForm")
 	public void updateForm(@ModelAttribute("pbean") SpBoardParam pbean, long seq, Model model) {
-		model.addAttribute("vo", service.getDetail(seq));
+		model.addAttribute("vo", service.getDetail(seq, 'u'));
 	}
 	
 	@PostMapping("/updatePro")
 	@PreAuthorize("principal.username == #vo.register || hasAuthority('admin')") //hasAnyRole 차이 확인 "메모"
 	public String updatePro(@ModelAttribute("pbean") SpBoardParam pbean, SpBoardVO vo, Authentication authentication, RedirectAttributes rttr) {
 		
-		CustomUser user = (CustomUser)authentication.getPrincipal();
-		vo.setRegister(user.getUsername());
+//		CustomUser user = (CustomUser)authentication.getPrincipal();
+//		vo.setRegister(user.getUsername());
+		
+		vo.setRegister(authentication.getName());
+		
 		
 		int rg = service.updatePro(vo);
-		
+	
 		rttr.addFlashAttribute("result", rg > 0);
 		
 		return "redirect:/board/detailForm" + pbean.getParamUrl() + "&seq=" + vo.getSeq();
@@ -90,6 +95,7 @@ public class SpBoardController {
 	@PostMapping("/deletePro")
 	@PreAuthorize("principal.username == #vo.register || hasAuthority('admin')")
 	public String deletePro(@ModelAttribute("pbean") SpBoardParam pbean, SpBoardVO vo, Authentication authentication, RedirectAttributes rttr) {
+
 		int rg = service.deletePro(vo);
 		
 		rttr.addFlashAttribute("result", rg > 0);

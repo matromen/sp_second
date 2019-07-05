@@ -16,5 +16,9 @@
 	<delete id="seqAllAttachDelete">
 		delete from sp_board_attach where seq=#{seq}
 	</delete>
+	
+	<select id="getYesterDayFiles" resultType="com.bgkim.domain.board.SpBoardAttachVO">
+		select uuid, seq, filename, uploadpath, filetype from sp_board_attach where uploadpath = to_char(sysdate-1, 'yyyy/MM/dd')
+	</select>
 </mapper>
 

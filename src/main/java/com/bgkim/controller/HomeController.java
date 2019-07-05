@@ -11,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.bgkim.domain.board.SpBoardReplyVO;
+
 /**
  * Handles requests for the application home page.
  */
@@ -23,8 +25,13 @@ public class HomeController {
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
+	public String home(Locale locale, String str, long i, SpBoardReplyVO vo, Model model) {
 		logger.info("Welcome home! The client locale is {}.", locale);
+		
+		logger.info("##################### :" + str);
+		logger.info("##################### :" + i);
+		logger.info("##################### :" + vo.getSeq());
+		logger.info("##################### :" + vo.getContent());
 		
 		Date date = new Date();
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);

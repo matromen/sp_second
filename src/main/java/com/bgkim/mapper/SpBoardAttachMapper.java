@@ -11,5 +11,6 @@ public interface SpBoardAttachMapper {
 	
 	public void seqAllAttachDelete(long seq);
 	
+	public List<SpBoardAttachVO> getYesterDayFiles();
 }
 

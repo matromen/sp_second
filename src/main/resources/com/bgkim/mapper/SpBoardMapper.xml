@@ -88,4 +88,20 @@
 	<delete id="deleteDelete">
 		delete from sp_board where seq = #{seq}
 	</delete>
+	
+	<select id="getCountRegisterSeq" resultType="int">
+		select count(*) from sp_board_count where seq=#{seq} and register=#{register}
+	</select>
+	
+	<select id="writeSpBoardCountInsert">
+		insert into sp_baord_count (seq, register) values (#{seq}, #{register})
+	</select>
+	
+	<update id="modSpBoardCountUpdate">
+		update sp_board set viewcount = viewcount+1 where seq = #{seq}
+	</update>
+	
+	<delete id="remSpBoardCountAllDelete">
+		delete from sp_board_count where seq=#{seq}
+	</delete>
 </mapper>    

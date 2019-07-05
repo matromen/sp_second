@@ -125,6 +125,8 @@
 
 					<button type="button" id="listButton" class="btn btn-default">취소</button>		
 						
+							
+						
 											
 					<!-- listForm 시작 -->
 							
